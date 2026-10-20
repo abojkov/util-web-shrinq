@@ -92,6 +92,7 @@
     const message = mime === 'application/pdf' ? 'Optimizing your PDF… Large files may take a moment.' : 'Making your image lighter…';
     $('processing-message').textContent = message; announce(message);
     try {
+      if (location.protocol === 'file:') throw Error('Open Shrinq through a local web server. See the README for the one-line start command.');
       // Give the browser a frame to paint the working state before image decoding.
       await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
       const preset = document.querySelector('input[name="preset"]:checked').value;

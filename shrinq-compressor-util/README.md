@@ -6,9 +6,8 @@ installation, build step, backend or document uploads are required.
 
 ## Browser usage
 
-Keep the folder beside your HTML file, preserving its internal layout. Open the
-HTML file directly in your browser and load the classic script before calling
-the API:
+Serve the folder over HTTP(S), preserving its internal layout. Load the classic
+script before calling the API:
 
 ```html
 <script src="./shrinq-compressor-util/compressor.js"></script>
@@ -44,11 +43,9 @@ link.click();
 - Results are kept only when smaller. Signed and password-protected PDFs retain
   their original bytes. Invalid PDFs and worker failures reject the promise.
 
-PDF processing requires WebAssembly and Blob workers. Direct `file://` opening
-is supported without a server or network connection. The engine loads lazily
-from `pdf-engine.js`, a classic script containing the worker code and embedded
-WebAssembly. PDF requests run sequentially and release the worker and its Blob
-URL after each file. Worker startup/processing times out after three minutes.
+PDF processing requires module workers and WebAssembly; `file://` is unsupported.
+The engine loads lazily, processes PDF requests sequentially and releases its
+worker after each file. Worker startup/processing times out after three minutes.
 Images above 64 megapixels exceed the native processing limit.
 
 `ShrinqCompressorUtil.version` is the processing revision (currently `3`). The module
@@ -57,9 +54,8 @@ and backups. Track this version alongside saved results if you want to avoid
 recompressing an already optimized file. Keep source files when original quality
 is needed. The module does not impose Garage's 30 MB upload limit.
 
-The engine path resolves relative to `compressor.js`, so the folder can be
-placed under any local or hosted path. The self-contained browser bundle is
-about 14 MB and loads only when a PDF is compressed.
+All worker and engine paths resolve relative to the script, so the folder can
+be placed under any URL path. The native engine bundle is about 10 MB.
 
 ## Node.js usage
 
@@ -98,26 +94,11 @@ calls to the public API without options keep their original defaults.
 | Path | Purpose |
 | --- | --- |
 | `compressor.js` | Browser entry point: `ShrinqCompressorUtil` |
-| `pdf-engine.js` | Generated browser bundle with embedded WebAssembly |
-| `pdf-compression-worker.mjs` | Worker source and ready handshake |
-| `scripts/build-pdf-engine.cjs` | Rebuilds the browser bundle without dependencies |
+| `pdf-compression-worker.mjs` | PDF worker and ready handshake |
 | `pdf-compression-core.mjs` | PDF optimization using the native engine |
 | `vendor/mupdf/` | MuPDF JavaScript, WebAssembly and license |
 | `vendor/README.txt` | Pinned version and source/build provenance |
 | `tests/` | Tests that run independently of Garage and its sample PDFs |
-
-## Rebuild the browser engine
-
-The generated `pdf-engine.js` is included, so users do not need a build step.
-After changing the PDF core, worker source or vendored engine, regenerate it:
-
-```sh
-node scripts/build-pdf-engine.cjs
-```
-
-The builder adapts ESM boundaries inside isolated closures and embeds the native
-WebAssembly bytes. Upstream engine files remain unchanged. No external modules,
-fetches or file requests are needed inside the worker.
 
 ## Tests
 

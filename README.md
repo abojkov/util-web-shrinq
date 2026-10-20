@@ -4,15 +4,18 @@ A single-page file compressor built with HTML, Bootstrap 5.3.3, CSS and vanilla
 JavaScript. File processing stays in the browser. No build step, package install,
 account, backend or external runtime requests are needed.
 
-## Open the app
+## Run locally
 
-Double-click `index.html` to open it in your browser. No localhost, server,
-installation or terminal command is needed. Keep `assets/` and
-`shrinq-compressor-util/` alongside the HTML file.
+From the project root:
 
-PDF compression works directly from `file://`. Its engine loads as a local
-classic script with embedded WebAssembly and runs in a Blob worker. Images use
-the browser's built-in image processing. Everything works offline.
+```sh
+python3 -m http.server 8080 --bind 127.0.0.1
+```
+
+Open **http://127.0.0.1:8080**. Opening `index.html` directly with `file://` is not
+supported by PDF module workers. Deploy the whole directory to any static HTTP(S)
+host, preserving the utility and vendor folders. Serve `.mjs` as JavaScript and
+`.wasm` as `application/wasm` (Python's server handles these).
 
 ## Features
 
@@ -47,9 +50,8 @@ node --test shrinq-compressor-util/tests/*.test.cjs
 ```
 
 These cover the native PDF engine, worker lifecycle/settings/failures and image
-processing behavior with a canvas test double. They also execute the bundled PDF
-engine with network access disabled and exercise loading from a `file://` page.
-Browser visual and end-to-end checks remain separate.
+processing behavior with a canvas test double. Browser visual and end-to-end
+checks remain separate.
 
 ## Licenses
 

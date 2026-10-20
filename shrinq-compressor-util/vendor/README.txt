@@ -10,10 +10,3 @@ Bundled files: dist/mupdf.js, dist/mupdf-wasm.js, dist/mupdf-wasm.wasm, LICENSE.
 JavaScript files are renamed .mjs; the one relative import in mupdf.mjs is
 adjusted from mupdf-wasm.js to mupdf-wasm.mjs. No engine code is otherwise changed.
 The engine and its corresponding source are distributed under the license above.
-
-Shrinq browser packaging: ../scripts/build-pdf-engine.cjs generates
-../pdf-engine.js from these files and the local PDF core/worker sources.
-It adapts ESM boundaries into isolated async closures, substitutes the loader's
-import.meta.url with an inert base URL and embeds the unchanged WASM bytes as
-base64. wasmBinary is supplied explicitly, so no network loading is performed.
-The original files above remain available for source inspection and Node use.

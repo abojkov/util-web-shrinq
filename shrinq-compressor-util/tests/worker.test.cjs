@@ -11,7 +11,7 @@ function bootWorker() {
     postMessage(...args) { this.sent.push(args); }
     terminate() { this.terminated = true; }
   }
-  const runtime = vm.createContext({Blob, URL, Worker, Uint8Array, ShrinqPdfWorkerSource: '/* test worker */',
+  const runtime = vm.createContext({Blob, URL, Worker, Uint8Array,
     document: {currentScript: {src: 'https://example.test/tools/shrinq-compressor-util/compressor.js'}},
     setTimeout(callback) { timers.add(callback); return callback; }, clearTimeout(callback) { timers.delete(callback); }
   });
@@ -25,8 +25,8 @@ test('PDF bytes wait for the engine ready handshake and worker memory is release
   const pending = api.compress(new Blob(['PDF data'], {type: 'application/pdf'}));
   await tick();
   const worker = workers[0];
-  assert.equal(worker.options, undefined, 'The self-contained worker uses a classic Blob URL.');
-  assert.match(worker.url, /^blob:/);
+  assert.equal(worker.options.type, 'module');
+  assert.equal(worker.url.href, 'https://example.test/tools/shrinq-compressor-util/pdf-compression-worker.mjs');
   assert.equal(worker.sent.length, 0, 'Sending during module/WASM initialization can lose the file');
   worker.onmessage({data: {ready: true}});
   assert.equal(worker.sent.length, 1);

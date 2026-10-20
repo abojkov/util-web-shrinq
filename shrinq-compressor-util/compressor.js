@@ -1,27 +1,6 @@
 /* All document processing is local. A fresh worker releases native PDF memory after each file. */
 globalThis.ShrinqCompressorUtil = (() => {
-  const engineURL = new URL('pdf-engine.js', document.currentScript.src);
-  let engineReady;
-  function loadPdfEngine() {
-    if (globalThis.ShrinqPdfWorkerSource) return Promise.resolve(globalThis.ShrinqPdfWorkerSource);
-    if (!engineReady) {
-      engineReady = new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = engineURL.href;
-        script.onload = () => {
-          script.remove();
-          if (globalThis.ShrinqPdfWorkerSource) resolve(globalThis.ShrinqPdfWorkerSource);
-          else reject(Error('PDF engine did not initialize.'));
-        };
-        script.onerror = () => {
-          script.remove();
-          reject(Error('PDF engine could not load. Keep the complete shrinq-compressor-util folder next to the page.'));
-        };
-        document.head.append(script);
-      }).catch(error => { engineReady = null; throw error; });
-    }
-    return engineReady;
-  }
+  const workerURL = new URL('pdf-compression-worker.mjs', document.currentScript.src);
   let queue = Promise.resolve();
   const api = {
     version: 3,
@@ -54,18 +33,14 @@ globalThis.ShrinqCompressorUtil = (() => {
       } finally { image.close(); canvas.width = canvas.height = 0; }
     },
     async compressPdf(blob, options = {}) {
-      const source = await loadPdfEngine();
       const bytes = await blob.arrayBuffer();
       return new Promise((resolve, reject) => {
-        const workerURL = URL.createObjectURL(new Blob([source], {type: 'text/javascript'}));
-        let worker;
-        try { worker = new Worker(workerURL); }
-        catch (error) { URL.revokeObjectURL(workerURL); reject(error); return; }
+        const worker = new Worker(workerURL, {type: 'module'});
         let finished = false, sent = false;
         const finish = (error, output) => {
           if (finished) return;
           finished = true;
-          clearTimeout(timer); worker.terminate(); URL.revokeObjectURL(workerURL);
+          clearTimeout(timer); worker.terminate();
           error ? reject(error) : resolve(new Blob([output], {type: 'application/pdf'}));
         };
         const timer = setTimeout(() => finish(Error('PDF compression timed out.')), 180000);
@@ -80,7 +55,7 @@ globalThis.ShrinqCompressorUtil = (() => {
           }
           data.error ? finish(Error(data.error)) : finish(null, data.bytes);
         };
-        worker.onerror = () => finish(Error('PDF engine could not load. Keep the complete shrinq-compressor-util folder next to the page and use a browser with WebAssembly support.'));
+        worker.onerror = () => finish(Error('PDF engine could not load. Serve the complete shrinq-compressor-util folder over HTTP(S).'));
         worker.onmessageerror = () => finish(Error('Could not read the PDF engine result.'));
       });
     }

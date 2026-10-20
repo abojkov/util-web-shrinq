@@ -9,5 +9,5 @@ self.onmessage = ({data}) => {
   }
 };
 
-// Engine initialization is asynchronous: accept data only after this handshake.
+// Module/WASM initialization is asynchronous: accept data only after this handshake.
 self.postMessage({ready: true});
