@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f8fa">
+  <meta name="apple-mobile-web-app-title" content="Shrinq">
+  <meta name="application-name" content="Shrinq">
+  <meta name="description" content="Smaller files, without the upload. Compress PDFs and images privately in your browser with Shrinq.">
+  <title>Shrinq - Less file. More space.</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/styles.css">
+  <script defer src="shrinq-compressor-util/compressor.js"></script>
+  <script defer src="assets/app.js"></script>
+</head>
+<body>
+  <svg class="svg-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+    <symbol id="arrow" viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></symbol>
+    <symbol id="upload" viewBox="0 0 24 24"><path d="M12 16V4m-4 4 4-4 4 4M4 15v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4"/></symbol>
+    <symbol id="shield" viewBox="0 0 24 24"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6z"/><path d="m8 12 3 3 5-6"/></symbol>
+    <symbol id="file" viewBox="0 0 24 24"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M9 13h6m-6 4h6"/></symbol>
+    <symbol id="spark" viewBox="0 0 24 24"><path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5z"/></symbol>
+    <symbol id="download" viewBox="0 0 24 24"><path d="M12 3v12m-4-4 4 4 4-4M4 16v4h16v-4"/></symbol>
+    <symbol id="check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+  </defs></svg>
+  <header class="site-header">
+    <nav class="container d-flex align-items-center justify-content-between" aria-label="Main navigation">
+      <a class="brand" href="./" aria-label="Shrinq home"><img class="brand-mark" src="assets/logo-mark.svg" width="40" height="40" alt="" aria-hidden="true"><span class="brand-wordmark">shrinq<span class="brand-dot">.</span></span></a>
+      <div class="d-flex align-items-center nav-links"><a href="#how-it-works">How it works</a><span class="local-badge"><span></span>100% on your device</span></div>
+    </nav>
+  </header>
+  <main class="container">
+    <section class="hero text-center">
+      <div class="eyebrow"><span class="tiny-spark">✦</span> SMALLER FILES. ZERO FUSS.</div>
+      <h1>Less file.<br class="mobile-break"> <span>More space.</span></h1>
+      <p>Your files, a little lighter. Compress PDFs and images in seconds.<br class="d-none d-sm-block"> No uploads, no sign-ups. Just you and a smaller file.</p>
+    </section>
+    <section class="compressor mx-auto" aria-label="File compressor">
+      <div class="workspace-heading d-flex justify-content-between align-items-center"><span><span class="step-dot">1</span> Make room for more</span><span class="workspace-label">THE COMPRESSOR</span></div>
+      <div class="workspace-body">
+        <input id="file-input" type="file" accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/jpeg,image/png,image/webp" class="visually-hidden" aria-label="Choose a file to compress">
+        <div id="drop-zone" class="drop-zone">
+          <div class="upload-art" aria-hidden="true"><span class="art-back"></span><span class="art-file"><svg><use href="#file"/></svg><span></span><span></span></span><span class="art-bubble"><svg><use href="#upload"/></svg></span></div>
+          <h2>Big file? Drop it here.</h2>
+          <p>Drag and drop a file or pick one from your device</p>
+          <button id="choose-button" type="button" class="btn btn-primary choose-button">Choose a file <svg class="icon"><use href="#arrow"/></svg></button>
+          <div class="file-types"><span>PDF</span><span>JPG</span><span>PNG</span><span>WebP</span><span class="file-limit">One file · up to 100 MB</span></div>
+        </div>
+        <div id="selected-panel" class="selected-panel" hidden>
+          <div class="file-row"><div id="file-preview" class="file-preview"><svg class="icon"><use href="#file"/></svg></div><div class="file-details"><h2 id="file-name"></h2><p id="file-meta"></p></div><button id="remove-button" type="button" class="remove-button" aria-label="Remove selected file">×</button></div>
+          <div id="processing" class="processing" hidden><span class="spinner-border spinner-border-sm" aria-hidden="true"></span><span id="processing-message">Making your file lighter…</span></div>
+          <div id="result" class="result" hidden><div class="result-heading"><span class="success-icon"><svg class="icon"><use href="#check"/></svg></span><h3 id="result-title">A little lighter. Ready to go.</h3><span id="saving-badge" class="saving-badge"></span></div><div class="size-comparison"><div><span>Original</span><strong id="original-size"></strong></div><svg class="icon"><use href="#arrow"/></svg><div><span>After Shrinq</span><strong id="result-size"></strong></div></div><p id="result-note"></p><a id="download-button" class="btn btn-primary" download>Download file <svg class="icon"><use href="#download"/></svg></a><button id="another-button" class="another-button" type="button">Compress another file <span>↗</span></button></div>
+          <button id="compress-button" class="btn btn-primary w-100 mt-4" type="button">Compress file <svg class="icon"><use href="#spark"/></svg></button>
+        </div>
+        <div id="error" class="error-message" role="alert" hidden></div>
+        <fieldset id="preset-fieldset" class="preset-fieldset"><legend>Make it your kind of small <span>COMPRESSION LEVEL</span></legend><div class="preset-grid">
+          <label class="preset"><input type="radio" name="preset" value="gentle"><span class="preset-top"><span class="preset-symbol">◔</span><span class="radio-dot"></span></span><strong>Easy does it</strong><span>Higher quality, a little smaller</span></label>
+          <label class="preset"><input type="radio" name="preset" value="balanced" checked><span class="preset-top"><span class="preset-symbol">◑</span><span class="recommended">THE SWEET SPOT</span><span class="radio-dot"></span></span><strong>Just right</strong><span>A good balance of both</span></label>
+          <label class="preset"><input type="radio" name="preset" value="strong"><span class="preset-top"><span class="preset-symbol">●</span><span class="radio-dot"></span></span><strong>Go small</strong><span>Smaller file, less detail</span></label>
+        </div></fieldset>
+        <div id="status" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></div>
+      </div>
+      <div class="privacy-strip"><svg class="icon"><use href="#shield"/></svg><span>Your files stay yours. Everything happens right in your browser.</span><span class="privacy-lock">LOCAL & PRIVATE</span></div>
+    </section>
+    <section id="how-it-works" class="how-section mx-auto"><div class="section-kicker">A LITTLE LESS GOES A LONG WAY</div><h2>Small effort. Smaller files.</h2><div class="row g-4"><div class="col-md-4 feature"><span class="feature-number">01 /</span><h3>Pick your file</h3><p>That chunky PDF or oversized photo. You know the one.</p></div><div class="col-md-4 feature"><span class="feature-number">02 /</span><h3>Find your balance</h3><p>Keep the details, save the space or meet somewhere in the middle.</p></div><div class="col-md-4 feature"><span class="feature-number">03 /</span><h3>Take the lighter version</h3><p>Download and get on with your day. It really is that simple.</p></div></div></section>
+    <aside class="local-note mx-auto"><svg class="icon"><use href="#shield"/></svg><p><strong>A smaller footprint. A little peace of mind.</strong><br>No server ever sees your file. No accounts, no storage, no upload queue.</p><span aria-hidden="true">↗</span></aside>
+  </main>
+  <footer class="container d-flex justify-content-between align-items-center"><span class="footer-brand">shrinq.</span><span>Less is a little more.</span><span>Made for a lighter day <span class="footer-spark">✦</span></span></footer>
+</body>
+</html>
